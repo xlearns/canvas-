@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+		<style type="text/css">
+			html,
+			body {
+				margin: 0;
+				padding: 0;
+				background: #333;
+			}
+			.container {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: 100%;
+				height: 100%;
+				z-index: 2;
+				transform: translate(-50%,-50%) scale(0.8);
+			}
+			#canvas {
+				position: absolute;
+				z-index: 1;
+				filter: blur(5px);
+			}
+			.bubble {
+				position: absolute;
+				animation: floating linear infinite;
+			}
+			@keyframes floating {
+				0% {
+					transform: translateY(0px);
+				}
+			
+				50% {
+					transform: translateY(-5px);
+				}
+			
+				100% {
+					transform: translateY(0px);
+				}
+			}
+		</style>
+  </head>
+  <body>
+	<div class="container"></div>
+    <canvas id="canvas"></canvas>
+    <script type="text/javascript">
+			window.onload = () => drawDragonImageInCanvas()
+			
+			function drawDragonImageInCanvas() {
+				const c = document.querySelector('#canvas')
+				const ctx = c.getContext('2d')
+				const image = new Image()
+				
+				image.src = './long.jpg'
+				image.onload = () => {
+				  c.width = image.width
+				  c.height = image.height
+				  ctx.drawImage(image, 0, 0)
+					
+					const imageData = ctx.getImageData(0, 0, image.width, image.height).data
+					ctx.clearRect(0, 0, image.width, image.height)
+					// 像素间隔
+					const gap = 8
+					
+					// 通过点阵信息生成气泡 DOM
+					const dragonContainer = document.querySelector('.container')
+					const dragonScale = 2
+					for(let h = 0; h < image.height; h += gap) {
+						for (let w = 0; w < image.width; w += gap) {
+							const position = (image.width * h + w) * 4
+							const r = imageData[position]
+							const g = imageData[position + 1]
+							const b = imageData[position + 2]
+							// 有些图片看起来是黑色的，其实它的rgb只是接近黑色的数值而已 可以 r+g+b < 100
+							if(r + g + b < 100) {
+								// ctx.fillStyle = '#000'
+								// ctx.fillRect(w ,h, 4,4)
+								const bubble = document.createElement('img')
+								bubble.src = './bubble.png'
+								bubble.setAttribute('class','bubble')
+								
+								const bubbleSize = Math.random() * 10 + 20
+								bubble.style.left = `${w * dragonScale - bubbleSize / 2}px`
+								bubble.style.top = `${h * dragonScale - bubbleSize / 2}px`
+								bubble.style.width = bubble.style.height = `${bubbleSize}px`
+								// 动画完成的时间
+								bubble.style.animationDuration = `${Math.random() * 6 + 4 }s`
+								
+								bubble.addEventListener('click',()=>{
+									console.log(bubble)
+								})
+								dragonContainer.appendChild(bubble)
+							}
+						}
+					}
+				}
+			}
+
+    </script>
+  </body>
+</html>
