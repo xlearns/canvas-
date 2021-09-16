@@ -66,6 +66,7 @@
 					const gap = 8
 					
 					// 通过点阵信息生成气泡 DOM
+					let i = 0
 					const dragonContainer = document.querySelector('.container')
 					const dragonScale = 2
 					for(let h = 0; h < image.height; h += gap) {
@@ -81,6 +82,7 @@
 								const bubble = document.createElement('img')
 								bubble.src = './bubble.png'
 								bubble.setAttribute('class','bubble')
+								bubble.setAttribute('index',++i)
 								
 								const bubbleSize = Math.random() * 10 + 20
 								bubble.style.left = `${w * dragonScale - bubbleSize / 2}px`
@@ -90,7 +92,8 @@
 								bubble.style.animationDuration = `${Math.random() * 6 + 4 }s`
 								
 								bubble.addEventListener('click',()=>{
-									console.log(bubble)
+									console.log(bubble,bubble.getAttribute('index'))
+									alert(bubble.getAttribute('index'))
 								})
 								dragonContainer.appendChild(bubble)
 							}
