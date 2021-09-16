@@ -71,6 +71,7 @@
 					const dragonScale = 2
 					for(let h = 0; h < image.height; h += gap) {
 						for (let w = 0; w < image.width; w += gap) {
+							//h*image.width + w 为数组的每一项下标
 							const position = (image.width * h + w) * 4
 							const r = imageData[position]
 							const g = imageData[position + 1]
